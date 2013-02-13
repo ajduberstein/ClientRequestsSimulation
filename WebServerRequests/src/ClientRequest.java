@@ -1,16 +1,64 @@
 public class ClientRequest {
 	public final String[] STATES = new String[]{"CREATED",
 		"WS PROCESSING","DS LINE", "DS PROCESSING","EXIT"};
-	int dsRequestsNeeded;
-	int dsRequestsMet;
-	int webRequestsMet;
-	String location;
+	private int dsRequestsNeeded;
+	private int dsRequestsMet;
+	private int webRequestsMet;
+	private double wsWaitTime;
+	private double dsWaitTime;
+	private double createTime;
+	private String location;
 	
 	public ClientRequest(double rand){
 		this.dsRequestsNeeded = queriesNeeded(rand);
 		this.dsRequestsMet = 0;
 		this.webRequestsMet = 0;
 		this.location = STATES[0];
+	}
+	
+	private ClientRequest(int dsRequestsNeeded, int dsRequestsMet, int webRequestsMet, 
+			String location, double wsWaitTime, double dsWaitTime, double createTime){
+		this.dsRequestsNeeded = dsRequestsNeeded;
+		this.dsRequestsMet = dsRequestsMet;
+		this.webRequestsMet = webRequestsMet;
+		this.location = location;
+		this.createTime = createTime;
+		this.wsWaitTime = wsWaitTime;
+		this.dsWaitTime = dsWaitTime;
+	}
+	
+	public double getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(double createTime) {
+		this.createTime = createTime;
+	}
+
+	public ClientRequest newInstance(ClientRequest cr) {
+		return new ClientRequest(cr.getDsRequestsNeeded(), cr.getDsRequestsMet(), 
+				cr.getWebRequestsMet(), cr.getLocation(), cr.getWsWaitTime(),
+				cr.getDsWaitTime(), cr.getCreateTime());	
+	}
+
+	public void addDsWait(double time){
+		if (time >= 0){
+			dsWaitTime += time;
+		}
+	}
+	
+	public double getWsWaitTime() {
+		return wsWaitTime;
+	}
+
+	public double getDsWaitTime() {
+		return dsWaitTime;
+	}
+
+	public void addWsWait(double time){
+		if (time >= 0){
+			wsWaitTime += time;
+		}
 	}
 	
 	public boolean canLeaveSystem(){
